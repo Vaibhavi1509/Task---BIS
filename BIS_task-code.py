@@ -3,7 +3,7 @@
 
 # In[6]:
 
-
+# Import the necessary libraries
 import requests
 import pandas as pd
 import numpy as np
@@ -16,9 +16,8 @@ from datetime import datetime
 
 # In[7]:
 
-
+#Get request for the BIS website
 response =  requests.get('https://www.bis.org/statistics/full_data_sets.htm','https://www.bis.org/statistics/full_credit_gap_csv.zip')
-print(response.status_code)
 
 
 # In[8]:
@@ -29,7 +28,7 @@ soup = BeautifulSoup(response.text, "html.parser")
 
 # In[9]:
 
-
+#Get all the text present in the website along with links
 all_text = []
 for text in soup.find_all('a'):
     all_text.append(text)
@@ -39,7 +38,7 @@ print(string)
 
 # In[10]:
 
-
+#Extract the link tag for all the datasets 
 all_links = []
 for link in string:
     if '<a href="/statistics/full_' in link:
@@ -51,7 +50,7 @@ print(all_links)
 
 # In[11]:
 
-
+#Extract the name of all the datasets
 name = []
 for s in string:
     if '<a href="/statistics/full_' in s:
@@ -62,7 +61,7 @@ print(name)
 
 # In[12]:
 
-
+#Clean the names of the dataset by removing unnecessary characters
 dataset = []
 for data in name:
     if '\xa0' in data:
@@ -73,20 +72,20 @@ print(dataset)
 
 # In[13]:
 
-
+#Create a dataframe for the names and links of all the datasets and place it in a csv file
 df = pd.DataFrame({'DATA':dataset ,'LINKS':all_links})
 df.to_csv('BIS statistics.csv', index = False)
 
 
 # In[14]:
 
-
+#Display the created csv file
 BIS = pd.read_csv('BIS statistics.csv')
-BIS
+print(BIS)
 
 
 # In[23]:
-
+# Created a Scrapper class that'll extract the Credit to gdp gaps dataset
 
 class Scrapper:
     
@@ -131,8 +130,10 @@ class Scrapper:
         index to represent year-quarterly range. A separate column with all the timestamps''')
         print(credit_gap)
         
+        #Storing the new dataset in a csv file
         credit_gap.to_csv('Credit_To_Gdp_Gaps.csv')
-        
+ 
+#Call the class
 Scrapper.credit_gap_dataset()
               
 
